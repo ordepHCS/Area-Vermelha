@@ -29,6 +29,7 @@ public class ComplaintController {
             User user = new User();
             user.setId(userId);
             complaint.setUser(user);
+
             Complaint createdComplaint = complaintService.createComplaint(user, complaint);
             return new ResponseEntity<>(createdComplaint, HttpStatus.CREATED);
         }catch(IOException exception) {

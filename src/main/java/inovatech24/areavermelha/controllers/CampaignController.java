@@ -51,12 +51,12 @@ public class CampaignController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCampaign(@PathVariable Long id) {
         try {
-            if (campaignService.deleteCampaign(id)) {
+            if(campaignService.deleteCampaign(id)) {
                 return ResponseEntity.ok("Campaign deleted successfully.");
             }else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Campaign not found.");
             }
-        } catch(IOException exception) {
+        }catch(IOException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting campaign.");
         }
     }

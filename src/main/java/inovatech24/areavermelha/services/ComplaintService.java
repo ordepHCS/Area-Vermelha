@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import inovatech24.areavermelha.domain.Complaint;
 import inovatech24.areavermelha.domain.User;
 import inovatech24.areavermelha.jsonmanager.JsonFileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,6 +18,8 @@ public class ComplaintService {
     private final AtomicLong counter = new AtomicLong(1);
     private static final String FILE_PATH = "C:\\Users\\pcamp\\OneDrive\\Documentos\\JavaProjects\\areavermelha\\data\\complaint.json";
 
+    @Autowired
+    private GoogleMapsService googleMapsService;
 
     public ComplaintService() throws IOException {
         this.complaints = new ArrayList<>(JsonFileUtil.loadDataFromFile(FILE_PATH, new TypeReference<>() {}));
@@ -28,6 +31,16 @@ public class ComplaintService {
     public Complaint createComplaint(User user, Complaint complaint) throws IOException {
         complaint.setId(counter.getAndIncrement());
         complaint.setUser(user);
+
+        String fullAddress = complaint.getStreet() + ", " + complaint.getNeighborhood() + ", " +
+                complaint.getCity() + ", " + complaint.getState() + ", " + complaint.getCep();
+
+        double[] coordinates = googleMapsService.getCoordinates(fullAddress);
+        if(coordinates != null) {
+            complaint.setLatitude(coordinates[0]);
+            complaint.setLongitude(coordinates[1]);
+        }
+
         complaints.add(complaint);
         JsonFileUtil.saveDataToFile(complaints, FILE_PATH);
         return complaint;

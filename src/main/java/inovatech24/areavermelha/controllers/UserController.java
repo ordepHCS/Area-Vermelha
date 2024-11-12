@@ -26,30 +26,28 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Registro de usuário
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@Valid @RequestBody User user) {
         try {
             User registeredUser = userService.registerUser(user);
             return ResponseEntity.ok(registeredUser);
-        } catch (IOException e) {
+        }catch(IOException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
     }
 
-    // Login de usuário
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             Optional<User> user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
-            if (user.isPresent()) {
+            if(user.isPresent()) {
                 return ResponseEntity.ok("Login successful");
-            } else {
+            }else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Invalid email or password");
             }
-        } catch (Exception e) {
+        }catch(Exception exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred during login");
         }

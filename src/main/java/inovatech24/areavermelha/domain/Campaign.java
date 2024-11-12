@@ -1,5 +1,6 @@
 package inovatech24.areavermelha.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Campaign {
     private Long id;
 
@@ -17,7 +19,7 @@ public class Campaign {
     private String campaignName;
 
     @NotBlank(message = "CEP cannot be empty")
-    private String zipCode;
+    private String cep;
 
     @NotBlank(message = "Street cannot be empty")
     private String street;

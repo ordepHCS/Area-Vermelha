@@ -17,7 +17,7 @@ public class Complaint {
     private String occurrenceCode;
 
     @NotBlank(message = "CEP cannot be empty")
-    private String zipCode;
+    private String cep;
 
     @NotBlank(message = "Street cannot be empty")
     private String street;
@@ -36,4 +36,8 @@ public class Complaint {
 
     private byte[] image;
     private User user;
+
+    //for google maps api
+    private Double latitude;
+    private Double longitude;
 }
