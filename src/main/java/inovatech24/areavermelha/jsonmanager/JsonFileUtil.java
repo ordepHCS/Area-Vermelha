@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,13 +20,7 @@ public class JsonFileUtil {
     }
 
     public static <T> void saveDataToFile(List<T> newData, String filePath) throws IOException {
-        File file = new File(filePath);
-        List<T> existingData = new ArrayList<>();
-        if(file.exists() && file.length() > 0) {
-            existingData = objectMapper.readValue(file, new TypeReference<List<T>>() {});
-        }
-        existingData.addAll(newData);
-        objectMapper.writeValue(file, existingData);
+        objectMapper.writeValue(new File(filePath), newData);
     }
 
     public static <T> List<T> loadDataFromFile(String filePath, TypeReference<List<T>> typeReference) throws IOException {

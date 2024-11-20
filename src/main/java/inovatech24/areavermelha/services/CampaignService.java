@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class CampaignService {
     private final List<Campaign> campaigns;
     private final AtomicLong counter = new AtomicLong(1);
-    private static final String FILE_PATH = "C:\\Users\\pcamp\\OneDrive\\Documentos\\JavaProjects\\areavermelha\\data\\campaign.json";
+    private static final String FILE_PATH = "C:\\Users\\pcamp\\OneDrive\\Documentos\\JavaProjects\\Area-Vermelha-main\\data\\campaign.json";
 
 
     public CampaignService() throws IOException {

@@ -37,6 +37,18 @@ public class ComplaintController {
         }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Complaint>> getAllComplaints() {
+        List<Complaint> complaints = complaintService.getAllComplaints();
+        return new ResponseEntity<>(complaints, HttpStatus.OK);
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Complaint>> getComplaintsByCategory(@PathVariable String category) {
+        List<Complaint> complaints = complaintService.getComplaintsByCategory(category);
+        return new ResponseEntity<>(complaints, HttpStatus.OK);
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Complaint>> getAllComplaintsByUser(@PathVariable Long userId) {
         List<Complaint> complaints = complaintService.getAllComplaintsByUser(userId);
@@ -46,6 +58,12 @@ public class ComplaintController {
     @GetMapping("/dangerous-areas-ranking")
     public ResponseEntity<List<Map<String, Object>>> getDangerousAreasRanking() {
         List<Map<String, Object>> ranking = complaintService.getDangerousAreasR();
+        return new ResponseEntity<>(ranking, HttpStatus.OK);
+    }
+
+    @GetMapping("/dangerous-areas-ranking/hashtags")
+    public ResponseEntity<List<Map<String, Object>>> getDangerousAreasRankingByHashtags() {
+        List<Map<String, Object>> ranking = complaintService.getDangerousAreasRByHashtags();
         return new ResponseEntity<>(ranking, HttpStatus.OK);
     }
 }

@@ -15,12 +15,15 @@ import java.util.concurrent.atomic.AtomicLong;
 public class UserService {
     private final List<User> users;
     private final AtomicLong counter = new AtomicLong(1);
-    private static final String FILE_PATH = "C:\\Users\\pcamp\\OneDrive\\Documentos\\JavaProjects\\areavermelha\\data\\user.json";
+    private static final String FILE_PATH = "C:\\Users\\pcamp\\OneDrive\\Documentos\\JavaProjects\\Area-Vermelha-main\\data\\user.json";
 
+    public List<User> getUsers() {
+        return new ArrayList<>(users);
+    }
 
     public UserService() throws IOException {
         this.users = new ArrayList<>(JsonFileUtil.loadDataFromFile(FILE_PATH, new TypeReference<>() {}));
-        if (!users.isEmpty()) {
+        if(!users.isEmpty()) {
             counter.set(users.stream().mapToLong(User::getId).max().orElse(1) + 1);
         }
     }

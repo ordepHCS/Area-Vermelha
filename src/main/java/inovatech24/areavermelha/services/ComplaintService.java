@@ -16,7 +16,34 @@ import java.util.stream.Collectors;
 public class ComplaintService {
     private final List<Complaint> complaints;
     private final AtomicLong counter = new AtomicLong(1);
-    private static final String FILE_PATH = "C:\\Users\\pcamp\\OneDrive\\Documentos\\JavaProjects\\areavermelha\\data\\complaint.json";
+    private static final String FILE_PATH = "C:\\Users\\pcamp\\OneDrive\\Documentos\\JavaProjects\\Area-Vermelha-main\\data\\complaint.json";
+
+    public List<Map<String, Object>> getDangerousAreasRByHashtags() {
+        List<String> predefinedHashtags = Arrays.asList(
+                "#areadefloresta", "#ruasemiluminação", "#ruacomiluminação",
+                "#ruasemasfalto", "#ruaasfaltada", "#poucamovimentação",
+                "#pontodeonibus", "#ruacomburacos", "#areaescolar"
+        );
+
+        Map<String, Long> hashtagCount = predefinedHashtags.stream()
+                .collect(Collectors.toMap(
+                        hashtag -> hashtag,
+                        hashtag -> complaints.stream()
+                                .filter(complaint -> complaint.getHashtags() != null && complaint.getHashtags().contains(hashtag))
+                                .count()
+                ));
+
+        List<Map<String, Object>> hashtagRanking = hashtagCount.entrySet().stream()
+                .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
+                .map(entry -> {
+                    Map<String, Object> rankingInfo = new HashMap<>();
+                    rankingInfo.put("hashtag", entry.getKey());
+                    rankingInfo.put("count", entry.getValue());
+                    return rankingInfo;
+                })
+                .collect(Collectors.toList());
+        return hashtagRanking;
+    }
 
     @Autowired
     private GoogleMapsService googleMapsService;
@@ -31,6 +58,7 @@ public class ComplaintService {
     public Complaint createComplaint(User user, Complaint complaint) throws IOException {
         complaint.setId(counter.getAndIncrement());
         complaint.setUser(user);
+        complaint.setOccurrenceCode(UUID.randomUUID().toString());
 
         String fullAddress = complaint.getStreet() + ", " + complaint.getNeighborhood() + ", " +
                 complaint.getCity() + ", " + complaint.getState() + ", " + complaint.getCep();
@@ -46,23 +74,35 @@ public class ComplaintService {
         return complaint;
     }
 
+    public List<Complaint> getAllComplaints() {
+        return new ArrayList<>(complaints);
+    }
+
     public List<Complaint> getAllComplaintsByUser(Long userId) {
         return complaints.stream()
                 .filter(complaint -> complaint.getUser().getId().equals(userId))
                 .toList();
     }
 
-    public List<Map<String, Object>> getDangerousAreasR() {
+    public List<Complaint> getComplaintsByCategory(String category) {
         return complaints.stream()
-                .collect(Collectors.groupingBy(Complaint::getNeighborhood, Collectors.counting()))
-                .entrySet().stream()
+                .filter(complaint -> complaint.getHashtags() != null && complaint.getHashtags().contains(category))
+                .collect(Collectors.toList());
+    }
+
+    public List<Map<String, Object>> getDangerousAreasR() {
+        Map<String, Long> neighborhoodCount = complaints.stream()
+                .filter(complaint -> complaint.getNeighborhood() != null && !complaint.getNeighborhood().isEmpty())
+                .collect(Collectors.groupingBy(Complaint::getNeighborhood, Collectors.counting()));
+        List<Map<String, Object>> areaRanking = neighborhoodCount.entrySet().stream()
                 .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
                 .map(entry -> {
                     Map<String, Object> areaInfo = new HashMap<>();
-                    areaInfo.put("area", entry.getKey());
+                    areaInfo.put("neighborhood", entry.getKey());
                     areaInfo.put("count", entry.getValue());
                     return areaInfo;
                 })
                 .collect(Collectors.toList());
+        return areaRanking;
     }
 }
